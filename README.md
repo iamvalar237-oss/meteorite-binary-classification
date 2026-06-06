@@ -62,43 +62,54 @@ The model package contains 10 checkpoints:
 - checkpoints_best_f1/fold0_best_f1.pth to fold4_best_f1.pth
 - checkpoints_best_loss/fold0_best_loss.pth to fold4_best_loss.pth
 
-For reproducing the final submitted CSV, use the 5 best_f1 checkpoints.
+For reproducing the final submitted CSV, use the 5 checkpoints in checkpoints_best_f1/.
 
-After downloading and extracting the model package, create an alias directory in this repository:
-
-    mkdir -p checkpoints_final_best_f1_alias
-    cp /path/to/model_release_for_cloud_0.84571_20260606_232402/checkpoints_best_f1/fold*_best_f1.pth checkpoints_final_best_f1_alias/
-
-The inference script expects fold checkpoint files inside one checkpoint directory.
+The inference script accepts checkpoint names matching fold*_best.pth, fold*_best_f1.pth, or fold*_best_loss.pth.
 
 ## Inference reproduction
 
-Prepare the required test data files according to configs/final_config.yaml and docs/DATA.md.
+This path is intended to reproduce the final submission using the released model weights.
 
-Then run:
+Required files/directories:
 
-    python inference.py --config configs/final_config.yaml --checkpoint-dir checkpoints_final_best_f1_alias --output reproduced_submission.csv --tta
+- test_images/
+- sample_submission.csv
+- configs/final_config.yaml
+- downloaded model package containing checkpoints_best_f1/
+
+Example after extracting the model package next to this repository:
+
+    python inference.py --config configs/final_config.yaml --checkpoint-dir ../model_release_for_cloud_0.84571_20260606_232402/checkpoints_best_f1 --output reproduced_submission.csv --threshold 0.125 --tta
+
+The threshold 0.125 is the selected threshold for the final ensemble_5fold_best_f1 candidate.
 
 The released final submission is:
 
     final_submission/01_ensemble_5fold_best_f1_F1_0.994350_pos89_FP1_FN0.csv
 
-If the same test images, sample submission file, configuration, and 5 best_f1 checkpoints are used, the inference output should reproduce the final submission.
+With the same test images, sample submission file, configuration, 5 best_f1 checkpoints, threshold=0.125, and TTA enabled, the output should reproduce the released final submission.
 
 ## Full training reproduction
 
-Full training requires restoring the original course training images and the curated external or pseudo-labeled data used by configs/final_config.yaml.
+Full training requires restoring the original course training data, curated external or pseudo-labeled data, and the local pretrained ConvNeXt safetensors checkpoint referenced by configs/final_config.yaml.
 
-The GitHub release intentionally excludes:
+Required training files/directories include:
 
-- raw train images
-- raw test images
-- external or pseudo image data
-- trained checkpoints
-- large outputs and logs
-- reference label files used only for internal validation
+- train_images/
+- train_labels.csv
+- outputs/pseudo_stage2/round4_plus_perfect6_round2curated_056119131184pos_114neg_external_train.csv
+- pretrained/convnext_small.in12k_ft_in1k_384/model.safetensors
 
-To rerun training after restoring the required data paths, use:
+The external training CSV should contain at least these columns:
+
+- id
+- path
+- label
+- sample_weight
+
+The path column must point to image files that are accessible in the current environment.
+
+To rerun training after restoring the required files, use:
 
     bash scripts/run_round2curated_056119131184pos_114neg_train5fold.sh
 
@@ -106,7 +117,11 @@ To rerun evaluation after restoring the required validation/reference files, use
 
     bash scripts/eval_all_round2curated_056119131184pos_114neg_vs_perfect6_1_18_49.sh
 
-## Notes
+## Release notes
 
-This release is organized for code review and inference reproduction. The final model weights are provided separately through the cloud-drive model package.
+This repository is organized for code review and inference reproduction.
+
+The GitHub release intentionally excludes raw images, external image data, pseudo-labeled image data, trained checkpoints, large outputs/logs, private reference labels, API keys, and private credentials.
+
+Complete from-scratch training reproduction depends on restoring the full data assets and may still have small variation due to hardware and randomness.
 

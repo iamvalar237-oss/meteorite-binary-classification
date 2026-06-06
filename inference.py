@@ -20,7 +20,7 @@ from utils import ensure_dir, load_yaml
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="5-fold checkpoint inference and Kaggle submission generation")
     parser.add_argument("--config", required=True, help="Path to YAML config file")
-    parser.add_argument("--checkpoint-dir", required=True, help="Directory containing fold*_best.pth checkpoints")
+    parser.add_argument("--checkpoint-dir", required=True, help="Directory containing fold*_best.pth, fold*_best_f1.pth, or fold*_best_loss.pth checkpoints")
     parser.add_argument("--output", default=None, help="Submission output path; default: checkpoint-dir/submission.csv")
     parser.add_argument("--threshold", type=float, default=None, help="Override decision threshold")
     parser.add_argument("--tta", action="store_true", help="Use deterministic flip TTA")
@@ -29,10 +29,15 @@ def parse_args() -> argparse.Namespace:
 
 
 def find_checkpoints(checkpoint_dir: Path) -> List[Path]:
-    checkpoints = sorted(checkpoint_dir.glob("fold*_best.pth"))
-    if not checkpoints:
-        raise FileNotFoundError(f"No fold checkpoints found under {checkpoint_dir}; expected fold*_best.pth")
-    return checkpoints
+    patterns = ["fold*_best.pth", "fold*_best_f1.pth", "fold*_best_loss.pth"]
+    for pattern in patterns:
+        checkpoints = sorted(checkpoint_dir.glob(pattern))
+        if checkpoints:
+            return checkpoints
+    raise FileNotFoundError(
+        f"No fold checkpoints found under {checkpoint_dir}; "
+        f"expected one of: {', '.join(patterns)}"
+    )
 
 
 def load_checkpoint(path: Path, device: torch.device) -> dict:
@@ -136,6 +141,7 @@ def main() -> None:
         model_config = copy.deepcopy(checkpoint.get("config", config))
         # Inference only needs the saved fine-tuned weights; avoid downloading pretrained weights again.
         model_config.setdefault("model", {})["pretrained"] = False
+        model_config["model"].pop("pretrained_checkpoint_path", None)
         model = build_model(model_config).to(device)
         model.load_state_dict(checkpoint["model_state_dict"])
         fold_logit_maps.append(predict_checkpoint(model, loader, device, args.tta, amp_enabled))

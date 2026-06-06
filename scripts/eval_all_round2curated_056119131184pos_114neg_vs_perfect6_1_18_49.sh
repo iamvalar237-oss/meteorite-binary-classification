@@ -4,7 +4,7 @@ set -euo pipefail
 cd /root/meteorite_stage2/meteorite_convnext_repro
 source .venv/bin/activate
 
-CONFIG="configs/convnext_small_384_bgstrong_round4_plus_perfect6_round2curated_056119131184pos_114neg_scout.yaml"
+CONFIG="configs/final_config.yaml"
 CKPT_DIR="outputs/convnext_small_384_bgstrong_round4_plus_perfect6_round2curated_056119131184pos_114neg_scout"
 NEW_PERFECT="/root/meteorite_stage2/完美文件6.1.18.49.csv"
 

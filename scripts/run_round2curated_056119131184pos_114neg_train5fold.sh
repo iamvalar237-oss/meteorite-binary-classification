@@ -6,7 +6,7 @@ source .venv/bin/activate
 
 mkdir -p logs
 
-CONFIG="configs/convnext_small_384_bgstrong_round4_plus_perfect6_round2curated_056119131184pos_114neg_scout.yaml"
+CONFIG="configs/final_config.yaml"
 OUT_DIR="outputs/convnext_small_384_bgstrong_round4_plus_perfect6_round2curated_056119131184pos_114neg_scout"
 LOG="logs/round2curated_056119131184pos_114neg_train5fold.log"
 
