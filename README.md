@@ -55,7 +55,9 @@ Trained checkpoints are not included in this GitHub repository because each chec
 
 Download the model package from:
 
-Baidu Netdisk: https://pan.baidu.com/s/1ahdqqZy_oSnC91Rde_R0Rw?pwd=quc3  Extraction code: quc3
+Baidu Netdisk link: https://pan.baidu.com/s/1ahdqqZy_oSnC91Rde_R0Rw?pwd=quc3
+
+Extraction code: quc3
 
 The model package contains 10 checkpoints:
 
