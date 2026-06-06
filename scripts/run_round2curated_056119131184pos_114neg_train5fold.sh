@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cd /root/meteorite_stage2/meteorite_convnext_repro
-source .venv/bin/activate
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+if [ -f ".venv/bin/activate" ]; then
+  source ".venv/bin/activate"
+fi
 
 mkdir -p logs
 

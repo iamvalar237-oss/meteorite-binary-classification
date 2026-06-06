@@ -4,7 +4,7 @@ This repository contains the code release for the SUSTech Data Science Practice 
 
 ## Task
 
-The goal is to classify test images into two classes:
+The task is binary image classification:
 
 - label=1: meteorite
 - label=0: non-meteorite
@@ -27,8 +27,7 @@ final_submission/01_ensemble_5fold_best_f1_F1_0.994350_pos89_FP1_FN0.csv
 - models.py: model definition utilities
 - utils.py: shared helper utilities
 - configs/final_config.yaml: final configuration used for the released model
-- scripts/run_round2curated_056119131184pos_114neg_train5fold.sh: final 5-fold training command
-- scripts/eval_all_round2curated_056119131184pos_114neg_vs_perfect6_1_18_49.sh: final evaluation command
+- scripts/run_round2curated_056119131184pos_114neg_train5fold.sh: optional final 5-fold training command
 - docs/DATA.md: data and checkpoint notes
 
 ## Environment
@@ -49,7 +48,7 @@ Install dependencies with:
 
     pip install -r requirements.txt
 
-## Model checkpoints
+## Model checkpoint package
 
 Trained checkpoints are not included in this GitHub repository because each checkpoint is large.
 
@@ -59,48 +58,78 @@ Baidu Netdisk link: https://pan.baidu.com/s/1ahdqqZy_oSnC91Rde_R0Rw?pwd=quc3
 
 Extraction code: quc3
 
-The model package contains 10 checkpoints:
+The model package contains the released checkpoints. For reproducing the final submitted CSV, use:
 
-- checkpoints_best_f1/fold0_best_f1.pth to fold4_best_f1.pth
-- checkpoints_best_loss/fold0_best_loss.pth to fold4_best_loss.pth
-
-For reproducing the final submitted CSV, use the 5 checkpoints in checkpoints_best_f1/.
+    checkpoints_best_f1/fold0_best_f1.pth
+    checkpoints_best_f1/fold1_best_f1.pth
+    checkpoints_best_f1/fold2_best_f1.pth
+    checkpoints_best_f1/fold3_best_f1.pth
+    checkpoints_best_f1/fold4_best_f1.pth
 
 The inference script accepts checkpoint names matching fold*_best.pth, fold*_best_f1.pth, or fold*_best_loss.pth.
 
-## Inference reproduction
+## Reproduce the final submission CSV
 
-This path is intended to reproduce the final submission using the released model weights.
+This is the main reproduction path for the final Kaggle submission.
 
-Required files/directories:
+Step 1. Clone this repository.
 
-- test_images/
-- sample_submission.csv
-- configs/final_config.yaml
-- downloaded model package containing checkpoints_best_f1/
+Step 2. Put the official test files under the repository root:
 
-Example after extracting the model package next to this repository:
+    sample_submission.csv
+    test_images/
+
+Step 3. Download and extract the model package from Baidu Netdisk.
+
+Recommended directory layout:
+
+    meteorite-binary-classification/
+        inference.py
+        configs/final_config.yaml
+        sample_submission.csv
+        test_images/
+        final_submission/
+
+    model_release_for_cloud_0.84571_20260606_232402/
+        checkpoints_best_f1/
+            fold0_best_f1.pth
+            fold1_best_f1.pth
+            fold2_best_f1.pth
+            fold3_best_f1.pth
+            fold4_best_f1.pth
+
+Step 4. Run inference with the released checkpoint ensemble:
 
     python inference.py --config configs/final_config.yaml --checkpoint-dir ../model_release_for_cloud_0.84571_20260606_232402/checkpoints_best_f1 --output reproduced_submission.csv --threshold 0.125 --tta
 
-The threshold 0.125 is the selected threshold for the final ensemble_5fold_best_f1 candidate.
+The final submission was generated with the 5 best_f1 checkpoints, threshold=0.125, and TTA enabled.
 
-The released final submission is:
+The generated CSV can be compared with the released final CSV by running:
 
-    final_submission/01_ensemble_5fold_best_f1_F1_0.994350_pos89_FP1_FN0.csv
+    python3 - <<'PY'
+    import pandas as pd
+    a = pd.read_csv('reproduced_submission.csv')
+    b = pd.read_csv('final_submission/01_ensemble_5fold_best_f1_F1_0.994350_pos89_FP1_FN0.csv')
+    print('rows:', len(a))
+    print('same shape:', a.shape == b.shape)
+    print('same labels:', a.equals(b))
+    print('positives:', int(a['label'].sum()))
+    PY
 
-With the same test images, sample submission file, configuration, 5 best_f1 checkpoints, threshold=0.125, and TTA enabled, the output should reproduce the released final submission.
+If the same test images, sample submission file, configuration, released checkpoints, threshold=0.125, and TTA are used, the reproduced CSV should match the released final submission CSV.
 
-## Full training reproduction
+The released final submission CSV was submitted to Kaggle and obtained public F1 = 0.84571.
 
-Full training requires restoring the original course training data, curated external or pseudo-labeled data, and the local pretrained ConvNeXt safetensors checkpoint referenced by configs/final_config.yaml.
+## Optional full training
 
-Required training files/directories include:
+Full training is not required for reproducing the final submitted CSV from the released checkpoints.
+
+To rerun training, the following additional files/directories must be restored according to configs/final_config.yaml:
 
 - train_images/
 - train_labels.csv
-- outputs/pseudo_stage2/round4_plus_perfect6_round2curated_056119131184pos_114neg_external_train.csv
-- pretrained/convnext_small.in12k_ft_in1k_384/model.safetensors
+- external or pseudo-labeled training CSV
+- local ConvNeXt pretrained safetensors checkpoint
 
 The external training CSV should contain at least these columns:
 
@@ -111,19 +140,13 @@ The external training CSV should contain at least these columns:
 
 The path column must point to image files that are accessible in the current environment.
 
-To rerun training after restoring the required files, use:
+After restoring all required training assets, training can be launched with:
 
     bash scripts/run_round2curated_056119131184pos_114neg_train5fold.sh
 
-To rerun evaluation after restoring the required validation/reference files, use:
-
-    bash scripts/eval_all_round2curated_056119131184pos_114neg_vs_perfect6_1_18_49.sh
-
 ## Release notes
 
-This repository is organized for code review and inference reproduction.
+This repository is organized for code review and final submission inference reproduction.
 
-The GitHub release intentionally excludes raw images, external image data, pseudo-labeled image data, trained checkpoints, large outputs/logs, private reference labels, API keys, and private credentials.
-
-Complete from-scratch training reproduction depends on restoring the full data assets and may still have small variation due to hardware and randomness.
+The GitHub release intentionally excludes raw images, external image data, pseudo-labeled image data, trained checkpoints, large outputs/logs, API keys, and private credentials.
 
