@@ -15,7 +15,7 @@ Baidu Netdisk link: https://pan.baidu.com/s/1ahdqqZy_oSnC91Rde_R0Rw?pwd=quc3
 
 Extraction code: quc3
 
-For full training reproduction, the original course training images and curated external training data must be restored to the paths referenced by configs/final_config.yaml and the corresponding training CSV files.
+For full training reproduction, the original course training images and curated external training data must be restored to the paths specified in configs/final_config.yaml and the corresponding training CSV files.
 
 The final submitted CSV is included in:
 
