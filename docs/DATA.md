@@ -11,7 +11,7 @@ For inference reproduction, prepare the following files or directories outside t
 
 The trained checkpoints are provided separately in the model release package:
 
-[MODEL_CLOUD_DRIVE_LINK_TO_BE_FILLED]
+Baidu Netdisk: https://pan.baidu.com/s/1ahdqqZy_oSnC91Rde_R0Rw?pwd=quc3  Extraction code: quc3
 
 For full training reproduction, the original course training images and curated external/pseudo data must be restored to the paths referenced by configs/final_config.yaml and the corresponding training CSV files.
 
