@@ -128,7 +128,7 @@ To rerun training, the following additional files/directories must be restored a
 
 - train_images/
 - train_labels.csv
-- external or pseudo-labeled training CSV
+- curated external training CSV
 - local ConvNeXt pretrained safetensors checkpoint
 
 The external training CSV should contain at least these columns:
@@ -148,5 +148,5 @@ After restoring all required training assets, training can be launched with:
 
 This repository is organized for code review and final submission inference reproduction.
 
-The GitHub release intentionally excludes raw images, external image data, pseudo-labeled image data, trained checkpoints, large outputs/logs, API keys, and private credentials.
+The GitHub release intentionally excludes raw images, external image data, curated external image data, trained checkpoints, large outputs/logs, API keys, and private credentials.
 

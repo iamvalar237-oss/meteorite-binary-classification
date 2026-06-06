@@ -1,6 +1,6 @@
 # Data Notes
 
-This GitHub release does not include the full image dataset, external augmented images, pseudo-labeled images, or trained model checkpoints.
+This GitHub release does not include the full image dataset, curated external images, curated external images, or trained model checkpoints.
 
 For inference reproduction, prepare the following files or directories outside the GitHub repository:
 
@@ -15,7 +15,7 @@ Baidu Netdisk link: https://pan.baidu.com/s/1ahdqqZy_oSnC91Rde_R0Rw?pwd=quc3
 
 Extraction code: quc3
 
-For full training reproduction, the original course training images and curated external/pseudo data must be restored to the paths referenced by configs/final_config.yaml and the corresponding training CSV files.
+For full training reproduction, the original course training images and curated external training data must be restored to the paths referenced by configs/final_config.yaml and the corresponding training CSV files.
 
 The final submitted CSV is included in:
 

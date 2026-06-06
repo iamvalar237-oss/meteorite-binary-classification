@@ -8,7 +8,7 @@ data:
   id_col: id
   label_col: label
   n_splits: 5
-  external_train_csv: outputs/pseudo_stage2/round4_plus_perfect6_round2curated_056119131184pos_114neg_external_train.csv
+  external_train_csv: data/final_external_train.csv
 model:
   model_name: convnext_small.in12k_ft_in1k_384
   pretrained: true
@@ -40,7 +40,7 @@ train:
   num_workers: 4
 sample_weight:
   enabled: true
-  path: outputs/pseudo_stage2/round4_plus_perfect6_round2curated_056119131184pos_114neg_external_train.csv
+  path: data/final_external_train.csv
   id_col: path
   weight_col: sample_weight
 threshold:
@@ -48,4 +48,4 @@ threshold:
   max: 0.95
   step: 0.005
 output:
-  dir: outputs/convnext_small_384_bgstrong_round4_plus_perfect6_round2curated_056119131184pos_114neg_scout
+  dir: outputs/final_convnext_small_384_5fold

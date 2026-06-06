@@ -10,10 +10,10 @@ fi
 mkdir -p logs
 
 CONFIG="configs/final_config.yaml"
-OUT_DIR="outputs/convnext_small_384_bgstrong_round4_plus_perfect6_round2curated_056119131184pos_114neg_scout"
+OUT_DIR="outputs/final_convnext_small_384_5fold"
 LOG="logs/round2curated_056119131184pos_114neg_train5fold.log"
 
-echo "=== train 5fold: 056/119/131/184 POS + 114 NEG ===" | tee "$LOG"
+echo "=== train final 5fold model ===" | tee "$LOG"
 echo "config: $CONFIG" | tee -a "$LOG"
 
 for FOLD in 0 1 2 3 4; do
