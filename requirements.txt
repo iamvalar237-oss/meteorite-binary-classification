@@ -1,0 +1,9 @@
+torch
+torchvision
+timm
+pandas
+numpy
+scikit-learn
+pyyaml
+pillow
+tqdm

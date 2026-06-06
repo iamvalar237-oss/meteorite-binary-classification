@@ -1,0 +1,51 @@
+seed: 42
+data:
+  root_dir: .
+  train_csv: train_labels.csv
+  sample_submission: sample_submission.csv
+  train_img_dir: train_images
+  test_img_dir: test_images
+  id_col: id
+  label_col: label
+  n_splits: 5
+  external_train_csv: outputs/pseudo_stage2/round4_plus_perfect6_round2curated_056119131184pos_114neg_external_train.csv
+model:
+  model_name: convnext_small.in12k_ft_in1k_384
+  pretrained: true
+  pretrained_checkpoint_path: pretrained/convnext_small.in12k_ft_in1k_384/model.safetensors
+  dropout: 0.3
+  num_classes: 1
+  image_size: 384
+augment:
+  random_resized_crop_scale_min: 0.6
+  random_resized_crop_scale_max: 1.0
+  rotation_degrees: 20
+  random_grayscale_p: 0.15
+  color_jitter: true
+  random_erasing_p: 0.7
+  random_erasing_scale_min: 0.02
+  random_erasing_scale_max: 0.3
+loss:
+  type: bce
+  pos_weight: auto
+train:
+  epochs: 15
+  batch_size: 64
+  lr_backbone: 8e-6
+  lr_head: 8e-5
+  weight_decay: 0.05
+  amp: true
+  grad_clip_norm: 1.0
+  early_stopping_patience: 5
+  num_workers: 4
+sample_weight:
+  enabled: true
+  path: outputs/pseudo_stage2/round4_plus_perfect6_round2curated_056119131184pos_114neg_external_train.csv
+  id_col: path
+  weight_col: sample_weight
+threshold:
+  min: 0.05
+  max: 0.95
+  step: 0.005
+output:
+  dir: outputs/convnext_small_384_bgstrong_round4_plus_perfect6_round2curated_056119131184pos_114neg_scout
